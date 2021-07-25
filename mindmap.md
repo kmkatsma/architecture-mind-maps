@@ -2,6 +2,161 @@
 
 ## Methodology
 
+- Concepts
+
+  - Use A Framework
+    - Someone's probably solved most of your problems
+    - Levels of Frameworks
+    - Examples
+      - Tech - .net core web
+      - Architectural Abstractions - nest.js, spring
+      - Complete - Laravel, Ruby on Rails, Django
+  - Form Follows Function
+    - Accidental vs Essential Complexity
+    - Don't Chase Fads
+    - How?
+    - Arch Decisions Path - Document The Decisions!
+      - Data Requirements
+      - System Boundaries
+        - System of Systems
+      - -Ilities - Performance Characterstics
+      - Cloud Vendor
+      - Why Not Use PaaS?
+      - What About System Requirements?
+  - Fit and Finish
+    - Zero Defect
+      - Internally, Your Code is Perfect
+    - Sofware Craftsmanship
+      - YAGNI, DRY, SOLID, KISS
+    - Do the Right Things
+    - Write it Twice - Freyder
+      - Have To Solve The Problem First
+      - Then You Can Optimize
+      - Example Flow
+        - Write, Re-Write With Tests
+  - Universal Structural Elements
+    - Contracts - Message Formats
+      - Mediate The Communication
+    - Event Handler/Controller
+      - Mapping Messages To Handlers
+      - Plumbing Interface
+      - Minimize The Footprint
+        - One Endpoint To Rule Them All
+      - Types
+        - Stateful vs Stateless
+        - Controller
+        - Command Bus
+        - Actor
+    - Sequence/Flow - Manager
+    - Domain/Logic/Behavior - Engine
+      - To Allow Access Or Not?
+        - Cohesion/Coupling Tradeoff
+      - Not Allow: Functional - No Side Effect
+        - Cohesion
+        - Sharing Data: The 'Context'
+      - Allow: Additional Encapsulation
+    - Access to External Resources - Access
+    - User Interface
+    - Where's The Microservices?
+    - Don't _Design_ To Requirements
+  - Univeral Modular Elements
+    - Contracts/Models
+      - Structural And Modular Element!
+      - Structure of the Data
+      - External - Request/Response
+      - Internal
+        - Functional Custom Types
+        - Storage Format
+      - Technical Considerations
+        - Serialization
+        - Storage Format
+    - Core/iFx/Utilities
+      - Doesn't use Structural Elements
+    - Shared System - Behavior of generic system pattern
+      - Understands it is part of a system, inside/outside
+      - Uses System Structural Elements
+    - System Instance - 'Application'
+    - Domains
+  - Service Level Design
+    - Pipeline Theory
+    - Unix Philosophy, Functional Programming
+    - Events Trigger a Pipeline
+      - Can Be Fully Reactive - MarbleJs
+    - Pipeline is Series of Actions
+    - Generalized Flow
+      - Message Processing/Validation
+      - Get Other Data
+      - Do something with that Data
+      - Persist The Delta
+        - Note the Delta - Can Be Just the Delta
+      - Trigger Other Events
+      - Important - Last Two Must Be Consistent
+        - Outbox Pattern
+  - Dealing With Data
+    - Reads vs Writes
+      - Separation and CQRS
+      - Tools
+        - Full ORMs
+        - Lite ORMs
+        - Query Builders
+    - Structure
+      - Relational
+      - Non-Relational
+      - Hybrid - Relational Links, Document Data
+    - Caching
+    - System-Specific Data
+      - Audit
+      - Logs
+  - User Interface
+    - Use A Framework
+      - JQuery
+      - Gen 1 -
+      - Gen 2 - AngularJs, Knockout
+      - Gen 3 - React/Angular/Vue
+      - Gen 4 - Svelte
+      - SSR Frameworks - Next, Nuxt
+    - MessageTypes
+      - Communication Abstraction
+        - Facilitates Communication With Back End
+      - Can Be Dynamic
+      - Not Tied to Technology
+        - Only the Implemention of the Pattern Is
+    - "The UI Is The App"
+      - Limitations
+    - Components
+      - What About Logic
+        - Angular Services
+        - React - Utilities, Service Components ('withXYZ')
+    - State
+      - Types
+        - Domain/Reference/Lookup
+        - Search
+        - Resource
+      - Type Keys
+        - Form of Contract
+      - Caching
+      - Solutions
+        - React - Context, Redux, React Query
+        - Angular - NGRX, Akita, Angular Query
+    - Communication
+      - With BackEnd
+      - With Other Services
+      - Push/Pull
+    - Modularity
+      - Core
+      - State
+      - System
+        - Components/Services
+        - Layout
+        - Dashboard
+      - App - Custom System Layer
+        - Components/Services
+        - Dashboard
+      - Domain
+        - Components/Services
+      - Domain Shared
+        - Usable By Other Domain
+
 - Organization - [The Software Studio](https://www.forbes.com/sites/cognitiveworld/2019/08/28/agile-and-the-studio-model/?sh=6ed0f34778de)
   - Reading
     - [End Of Agile](https://www.forbes.com/sites/cognitiveworld/2019/08/23/the-end-of-agile/?sh=4364c0e22071)
@@ -29,6 +184,8 @@
   - Creative Teams
     - Assigned Elements of Design
     - Own the Implemation/Tactical design
+    - Team Size Theory - Communication Based
+    - Importance of Technical Leads
 - System (Strategic) Design
   - Define Volatilities
     - Dependencies
@@ -50,9 +207,20 @@
     - Physical Isolation Required When:
       - Scaling units of contexts differ greatly
       - Scaling demands of individual contexts are very large (e.g., massively parallel)
-  - [C4 Diagrams](https://github.com)
-  - Library Types
-    - appliation
+  - Library Groups/Types
+    - application
+    - 3 library groups
+      - fx - utilities/cross-cutting concerns
+      - system - core/shared system services/behavior
+      - feature - implements application logic
+    - 5 library types
+      - app shell - host application level behavior
+      - access - provides access to external services/state etc
+      - core - low-level 'utility' behavior
+      - domain - application behavior/logic; no external deps
+      - handlers - top level behavior for service calls, orchestrates behavior by composing domain + access elements
+      - models - data structures that represent app state as 'documents' and as 'dtos'
+      - ui - group of related ui components
     - fx - utilities
       - what is it?
         - reusable utilities
@@ -72,7 +240,7 @@
       - sub-types
         - access
         - domain
-        - handler
+        - handlers
         - models
         - ui
     - feature
@@ -83,6 +251,7 @@
         - access
         - app shell
         - domain
+        - handlers
         - models
         - ui
 - Project Design
@@ -149,7 +318,7 @@
 - Change Management
 
   - Source Control
-    - Use Monorepo To
+    - Benefits of Monorepo:
       - Always Latest Dependencies
       - Reduce Friction
       - Increase Visibility
@@ -158,7 +327,7 @@
     - Change-Driven Design
       - Design For Units Of Change
       - First Class Feature Flags
-        - Provide 'Seams'
+        - Provide 'Seams' For Flags
         - Automated Cleanup
         - Observability of Features In Use
     - Minimize Branching
@@ -166,9 +335,29 @@
       - Small Changes
 
 - Documentation
+  - Architectural Diagrams
+    - [C4 Diagrams](https://c4model.com/)
+    - [Diagrams as code](https://lukemerrett.com/c4-diagrams-as-code-architectural-joy/)
+      - Version Controlled in repo
+      - Visualize with [PlantUML](https://plantuml.com/)
   - Architectural Decisions
     - In the Repo as MD
     - Common Formats
+    - Examples
+      - Data Access Patterns (ORM)
+      - Service Contracts Definition/Generation
+      - Service Design Patterns
+      - Module Structures
+      - CI Tooling
+      - Infra-as-Code Tooling
+      - Branching Strategy
+      - Testing Tooling
+      - Testing Strategy
+      - Testing Environments
+      - UI Libraries
+      - UI Design System
+      - UI State Management
+      - UI/Service Call Pattern
   - Code Level
     - Auto-Generated Where Possible
     - Tests Are Form of Doc
